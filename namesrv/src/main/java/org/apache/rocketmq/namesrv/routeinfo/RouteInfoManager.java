@@ -237,6 +237,7 @@ public class RouteInfoManager {
         final Channel channel) {
         RegisterBrokerResult result = new RegisterBrokerResult();
         try {
+            // 先加锁，再维护broker注册表信息
             this.lock.writeLock().lockInterruptibly();
 
             //init or update the cluster info

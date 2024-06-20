@@ -1,0 +1,9 @@
+## 源码研究各模块重点标识
+- nameserver模块源码重点标注: 
+    - namesrv_look
+    - \bnamesrv_look\b.*
+    - namesrv
+- broker模块源码重点标注:
+  - broker_look
+  - \bbroker_look\b.*
+  - broker

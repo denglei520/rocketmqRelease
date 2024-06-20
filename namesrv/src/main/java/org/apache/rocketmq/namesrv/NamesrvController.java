@@ -219,6 +219,7 @@ public class NamesrvController {
     }
 
     public void start() throws Exception {
+        // 启动远程服务
         this.remotingServer.start();
 
         // In test scenarios where it is up to OS to pick up an available port, set the listening port back to config
@@ -233,7 +234,7 @@ public class NamesrvController {
         if (this.fileWatchService != null) {
             this.fileWatchService.start();
         }
-
+        // 启动路由服务？
         this.routeInfoManager.start();
     }
 

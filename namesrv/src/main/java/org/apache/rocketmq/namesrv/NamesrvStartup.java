@@ -52,13 +52,16 @@ public class NamesrvStartup {
     private static ControllerConfig controllerConfig = null;
 
     public static void main(String[] args) {
+        //namesrv_look nameserver服务启动入口
         main0(args);
         controllerManagerMain();
     }
 
     public static NamesrvController main0(String[] args) {
         try {
+            // 解析命令行命令信息和配置文件
             parseCommandlineAndConfigFile(args);
+            // 创建controller启动服务
             NamesrvController controller = createAndStartNamesrvController();
             return controller;
         } catch (Throwable e) {
@@ -94,10 +97,12 @@ public class NamesrvStartup {
         namesrvConfig = new NamesrvConfig();
         nettyServerConfig = new NettyServerConfig();
         nettyClientConfig = new NettyClientConfig();
+        // 默认的端口号9876
         nettyServerConfig.setListenPort(9876);
         if (commandLine.hasOption('c')) {
             String file = commandLine.getOptionValue('c');
             if (file != null) {
+                // 加载配置文件
                 InputStream in = new BufferedInputStream(Files.newInputStream(Paths.get(file)));
                 properties = new Properties();
                 properties.load(in);
@@ -120,6 +125,7 @@ public class NamesrvStartup {
 
         MixAll.properties2Object(ServerUtil.commandLine2Properties(commandLine), namesrvConfig);
         if (commandLine.hasOption('p')) {
+            // -p 表示输出配置信息，可以查看当前的配置
             MixAll.printObjectProperties(logConsole, namesrvConfig);
             MixAll.printObjectProperties(logConsole, nettyServerConfig);
             MixAll.printObjectProperties(logConsole, nettyClientConfig);
@@ -151,6 +157,7 @@ public class NamesrvStartup {
 
     public static NamesrvController createNamesrvController() {
 
+        //namesrv_look 创建NamesrvController，初始化资源
         final NamesrvController controller = new NamesrvController(namesrvConfig, nettyServerConfig, nettyClientConfig);
         // remember all configs to prevent discard
         controller.getConfiguration().registerConfig(properties);
@@ -158,22 +165,23 @@ public class NamesrvStartup {
     }
 
     public static NamesrvController start(final NamesrvController controller) throws Exception {
-
+        //namesrv_look 启动nameserver服务
         if (null == controller) {
             throw new IllegalArgumentException("NamesrvController is null");
         }
-
+        // 初始化资源：
         boolean initResult = controller.initialize();
         if (!initResult) {
             controller.shutdown();
             System.exit(-3);
         }
-
+        // 注册服务关闭钩子函数
         Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(log, (Callable<Void>) () -> {
+            // 释放资源
             controller.shutdown();
             return null;
         }));
-
+        // 真正启动
         controller.start();
 
         return controller;

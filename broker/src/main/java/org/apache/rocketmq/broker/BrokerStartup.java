@@ -49,6 +49,7 @@ public class BrokerStartup {
     public static final SystemConfigFileHelper CONFIG_FILE_HELPER = new SystemConfigFileHelper();
 
     public static void main(String[] args) {
+        //broker_look broker服务端启动入口
         start(createBrokerController(args));
     }
 
